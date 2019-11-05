@@ -1,51 +1,56 @@
 require 'rails_helper'
 
 RSpec.describe Task, type: :model do
-  describe 'パリデーションテスト' do
-    let(:user){ create :user }
+  describe 'パリデーション確認' do
 
-    describe 'タイトルのバリデーションテスト' do
-      context 'title presence:trueチェック' do
-
-        it 'タイトルが空の時にエラーになる' do
-          task = build(:task, title: '', status: 'todo', user_id: user.id)
-          expect(task).to_not be_valid
-        end
-
-        it 'タイトルが入っている時に登録できる' do
-          task = build(:task, title: 'タイトル', status: 'todo', user_id: user.id)
-          expect(task).to be_valid
-        end
-      end
-
-      context 'title uniqueness:trueチェック' do
-        before do
-          create(:task, title: 'タイトル', status: 'todo', user_id: user.id)
-        end
-
-        it 'タイトルが重複している時エラーになる' do
-          task = build(:task, title: 'タイトル', status: 'todo', user_id: user.id)
-          expect(task).to_not be_valid
-        end
-
-        it 'タイトルが重複していないと登録できる' do
-          task = build(:task, title: 'タイトル1', status: 'todo', user_id: user.id)
-          expect(task).to be_valid
-        end
+    context 'タイトルが空の場合' do
+      it 'バリデーションエラーになる' do
+        task = FactoryBot.build(:task, title: '', status: 'todo')
+        expect(task).to_not be_valid
+        task.valid?
+        expect(task.errors.messages[:title]).to include("can't be blank")
       end
     end
 
-    describe 'ステータスのバリデーションテスト' do
-      context 'status presence:trueチェック' do
-        it 'ステータスが空の時にエラーになる' do
-          task = build(:task,  title: 'タイトル', status: '', user_id: user.id)
-          expect(task).to_not be_valid
-        end
+    context 'タイトルが正常値の場合' do
+      it 'バリデーションエラーが発生しない' do
+        task = FactoryBot.build(:task, title: 'タイトル', status: 'todo')
+        expect(task).to be_valid
+      end
+    end
 
-        it 'ステータスが入っている時に登録できる' do
-          task = build(:task, title: 'タイトル', status: 'todo', user_id: user.id)
-          expect(task).to be_valid
-        end
+    context 'タイトルが重複している場合' do
+      before do
+        FactoryBot.create(:task, title: 'タイトル', status: 'todo')
+      end
+      it 'バリデーションエラーになる' do
+        task = FactoryBot.build(:task, title: 'タイトル', status: 'todo')
+        expect(task).to_not be_valid
+        task.valid?
+        expect(task.errors.messages[:title]).to include('has already been taken')
+      end
+    end
+
+    context 'タイトルが重複していない場合' do
+      it 'バリデーションエラーが発生しない' do
+        task = FactoryBot.build(:task, title: 'タイトル1', status: 'todo')
+        expect(task).to be_valid
+      end
+    end
+
+    context 'ステータスが空の場合' do
+      it 'バリデーションエラーになる' do
+        task = FactoryBot.build(:task,  title: 'タイトル', status: '')
+        expect(task).to_not be_valid
+        task.valid?
+        expect(task.errors.messages[:status]).to include("can't be blank")
+      end
+    end
+
+    context 'ステータスが正常値の場合' do
+      it 'バリデーションエラーが発生しない' do
+        task = FactoryBot.build(:task, title: 'タイトル', status: 'todo')
+        expect(task).to be_valid
       end
     end
   end
