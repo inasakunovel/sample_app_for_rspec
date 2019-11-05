@@ -44,7 +44,7 @@ RSpec.describe Task, type: :model do
         task = build(:task,  title: 'タイトル', status: '', user_id: user.id)
         expect(task).to_not be_valid
         task.valid?
-        expect(task.errors.messages[:title]).to include("can't be blank")
+        expect(task.errors.messages[:status]).to include("can't be blank")
       end
     end
 
