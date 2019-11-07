@@ -1,5 +1,4 @@
 require 'rails_helper'
-require 'support/login_macros'
 
 RSpec.describe 'Task', type: :system do
   let(:user){ create :user }
