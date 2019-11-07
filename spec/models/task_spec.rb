@@ -21,9 +21,9 @@ RSpec.describe Task, type: :model do
     context 'タイトルが重複している場合' do
       it 'バリデーションエラーになる' do
         create(:task, title: 'test_title')
-        task = build(:task, title: 'test_title', status: 'todo')
-        expect(task).to_not be_valid
-        expect(task.errors.messages[:title]).to include('has already been taken')
+        duplicated_task = build(:task, title: 'test_title', status: 'todo')
+        expect(duplicated_task).to_not be_valid
+        expect(duplicated_task.errors.messages[:title]).to include('has already been taken')
       end
     end
 
