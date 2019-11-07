@@ -1,8 +1,9 @@
 require 'rails_helper'
-require 'support/login_macros'
 
 RSpec.describe User, type: :system do
   let(:user){ create :user }
+  let(:another_user){ create :user }
+  let(:task){ create(:task, user_id: user.id ) }
   describe 'ログイン前' do
     describe 'ユーザー新規登録' do
       before do
@@ -52,10 +53,12 @@ RSpec.describe User, type: :system do
   end
 
   describe 'ログイン後' do
+    before do
+      login(user)
+    end
     describe 'ユーザー編集' do
       context 'フォームの入力値が正常' do
         it 'ユーザーの編集ができる' do
-          login(user)
           visit edit_user_path(user)
           fill_in 'user_email', with: 'shin@example.com'
           fill_in 'user_password', with: 'password_after'
@@ -67,7 +70,6 @@ RSpec.describe User, type: :system do
       end
       context 'メールアドレスが未入力時に' do
         it 'ユーザーの編集が失敗する' do
-          login(user)
           visit edit_user_path(user)
           fill_in 'user_email', with: ''
           fill_in 'user_password', with: 'password_after'
@@ -79,10 +81,8 @@ RSpec.describe User, type: :system do
       end
       context '登録済メールアドレスを使用' do
         it 'ユーザーの編集が失敗' do
-          user_duplicate = create :user
-          login(user)
           visit edit_user_path(user)
-          fill_in 'user_email', with: user_duplicate.email
+          fill_in 'user_email', with: another_user.email
           fill_in 'user_password', with: 'password_after'
           fill_in 'user_password_confirmation', with: 'password_after'
           click_button 'Update'
@@ -91,10 +91,7 @@ RSpec.describe User, type: :system do
         end
       end
       context '他ユーザーのユーザー編集ページにアクセス' do
-        # let!(:user2){ create :user}
-        fit 'アクセスが失敗する' do
-          another_user = create :user
-          login(user)
+        it 'アクセスが失敗する' do
           visit edit_user_path(another_user)
           expect(page).to have_content 'Forbidden access.'
           expect(current_path).to eq user_path(user)
@@ -102,9 +99,6 @@ RSpec.describe User, type: :system do
       end
       context '他ユーザーのタスク編集ページにアクセス' do
         it 'アクセスが失敗する' do
-          another_user = create :user
-          create(:task, user_id: user.id )
-          login(user)
           visit edit_user_path(another_user)
           expect(page).to have_content 'Forbidden access.'
           expect(current_path).to eq user_path(user)
@@ -116,7 +110,7 @@ RSpec.describe User, type: :system do
   describe 'マイページ' do
     context 'マイページに移動時' do
       it 'ユーザーのタスクが表示される' do
-        task = create(:task, user_id: user.id )
+        task
         login(user)
         visit tasks_path
         click_link 'Mypage'

@@ -3,6 +3,7 @@ require 'support/login_macros'
 
 RSpec.describe 'Task', type: :system do
   let(:user){ create :user }
+  let(:task){ create(:task, user_id: user.id) }
   describe 'ログイン前' do
     describe 'マイページ' do
       context 'ログインしていない状態' do
@@ -41,9 +42,9 @@ RSpec.describe 'Task', type: :system do
     end
     context 'タスクを編集' do
       it '編集が成功する' do
-        create(:task, title: 'title_before', user_id: user.id)
+        task
         click_link 'Mypage'
-        first('table').click_link('Edit')
+        find('table').click_link('Edit')
         fill_in 'Title', with: 'title_after'
         fill_in 'Content', with: 'content_after'
         select 'doing', from: 'Status'
@@ -55,7 +56,7 @@ RSpec.describe 'Task', type: :system do
     end
     context 'タスクを削除' do
       it '削除が成功する' do
-        create(:task, user_id: user.id)
+        task
         click_link 'Mypage'
         click_link 'Destroy'
         page.driver.browser.switch_to.alert.accept

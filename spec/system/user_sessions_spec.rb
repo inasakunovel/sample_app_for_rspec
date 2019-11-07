@@ -1,5 +1,4 @@
 require 'rails_helper'
-require 'support/login_macros'
 
 RSpec.describe 'UserSession', type: :system do
   let(:user){ create :user }
