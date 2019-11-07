@@ -7,7 +7,6 @@ RSpec.describe Task, type: :model do
       it 'バリデーションエラーになる' do
         task = build(:task, title: '', status: 'todo')
         expect(task).to_not be_valid
-        task.valid?
         expect(task.errors.messages[:title]).to include("can't be blank")
       end
     end
@@ -26,7 +25,6 @@ RSpec.describe Task, type: :model do
       it 'バリデーションエラーになる' do
         task = build(:task, title: 'タイトル', status: 'todo')
         expect(task).to_not be_valid
-        task.valid?
         expect(task.errors.messages[:title]).to include('has already been taken')
       end
     end
@@ -42,7 +40,6 @@ RSpec.describe Task, type: :model do
       it 'バリデーションエラーになる' do
         task = build(:task,  title: 'タイトル', status: '')
         expect(task).to_not be_valid
-        task.valid?
         expect(task.errors.messages[:status]).to include("can't be blank")
       end
     end
