@@ -19,7 +19,7 @@ RSpec.describe 'UserSession', type: :system do
       it 'ログインが失敗する' do
         fill_in 'Email', with: ''
         fill_in 'Password', with: ''
-        click_button "Login"
+        click_button 'Login'
         expect(page).to have_content 'Login failed'
         expect(current_path).to eq login_path
       end
