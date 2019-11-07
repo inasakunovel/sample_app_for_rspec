@@ -5,7 +5,7 @@ RSpec.describe Task, type: :model do
 
     context '正常値の場合' do
       it 'バリデーションエラーが発生しない' do
-        task = build(:task, title: 'タイトル', status: 'todo')
+        task = build(:task)
         expect(task).to be_valid
       end
     end
