@@ -61,8 +61,8 @@ RSpec.describe User, type: :system do
         it 'ユーザーの編集ができる' do
           visit edit_user_path(user)
           fill_in 'user_email', with: 'shin@example.com'
-          fill_in 'user_password', with: 'password_after'
-          fill_in 'user_password_confirmation', with: 'password_after'
+          fill_in 'user_password', with: 'password_changed'
+          fill_in 'user_password_confirmation', with: 'password_changed'
           click_button 'Update'
           expect(page).to have_content 'User was successfully updated.'
           expect(current_path).to eq user_path(user)
@@ -72,8 +72,8 @@ RSpec.describe User, type: :system do
         it 'ユーザーの編集が失敗する' do
           visit edit_user_path(user)
           fill_in 'user_email', with: ''
-          fill_in 'user_password', with: 'password_after'
-          fill_in 'user_password_confirmation', with: 'password_after'
+          fill_in 'user_password', with: 'password_changed'
+          fill_in 'user_password_confirmation', with: 'password_changed'
           click_button 'Update'
           expect(page).to have_content "Email can't be blank"
           expect(current_path).to eq user_path(user)
@@ -83,8 +83,8 @@ RSpec.describe User, type: :system do
         it 'ユーザーの編集が失敗' do
           visit edit_user_path(user)
           fill_in 'user_email', with: another_user.email
-          fill_in 'user_password', with: 'password_after'
-          fill_in 'user_password_confirmation', with: 'password_after'
+          fill_in 'user_password', with: 'password_changed'
+          fill_in 'user_password_confirmation', with: 'password_changed'
           click_button 'Update'
           expect(page).to have_content 'Email has already been taken'
           expect(current_path).to eq user_path(user)
